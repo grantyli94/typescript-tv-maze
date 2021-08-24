@@ -12775,6 +12775,7 @@ var $ = __webpack_require__(/*! jquery */ "./node_modules/jquery/dist/jquery.js"
 var $showsList = $("#showsList");
 var $episodesArea = $("#episodesArea");
 var $searchForm = $("#searchForm");
+var $episodesList = $("#episodesList");
 var BASE_URL = 'https://api.tvmaze.com';
 var MISSING_URL = 'https://tinyurl.com/missing-tv';
 /** Given a search term, search for tv shows that match that query.
@@ -12802,7 +12803,7 @@ function getShowsByTerm(term) {
         });
     });
 }
-/** Given list of shows, create markup for each and to DOM */
+/** Given list of shows, create markup for each and append to DOM */
 function populateShows(shows) {
     $showsList.empty();
     for (var _i = 0, shows_1 = shows; _i < shows_1.length; _i++) {
@@ -12867,8 +12868,35 @@ function getEpisodesOfShow(id) {
         });
     });
 }
-/** Write a clear docstring for this function... */
-// function populateEpisodes(episodes) { }
+/** Given list of episodes, create markup for each and append to DOM. */
+function populateEpisodes(episodes) {
+    $episodesList.empty();
+    for (var _i = 0, episodes_1 = episodes; _i < episodes_1.length; _i++) {
+        var episode = episodes_1[_i];
+        var $episode = $("<li>\n        " + episode.name + " (season " + episode.season + ", number " + episode.number + ")\n      </li>\n      ");
+        $episodesList.append($episode);
+    }
+    $episodesArea.show();
+}
+/** Handle Episodes button: get episodes of show from API and display.*/
+// specifies event comes from a JQuery click event
+function searchForEpisodesAndDisplay(evt) {
+    return __awaiter(this, void 0, void 0, function () {
+        var showID, episodes;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    showID = $(evt.target).closest("[data-show-id]").data("show-id");
+                    return [4 /*yield*/, getEpisodesOfShow(showID)];
+                case 1:
+                    episodes = _a.sent();
+                    populateEpisodes(episodes);
+                    return [2 /*return*/];
+            }
+        });
+    });
+}
+$showsList.on("click", ".Show-getEpisodes", searchForEpisodesAndDisplay);
 
 
 /***/ })
